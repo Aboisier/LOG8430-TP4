@@ -2,7 +2,9 @@
 
 ## Running the server
 
-To run the server, execute the following commands
+Rename the `.env.example` file to `.env` and set the environment variables with your values.
+
+Then, execute the following commands
 ```
 npm i
 npm run serve
@@ -21,8 +23,14 @@ curl -X POST \
       }'
 ```
 
-### Get frequent products
+### Get products
 
 ```cURL
 curl -X GET 'http://localhost:3000'
+```
+
+### Get frequent products
+
+```cURL
+curl -X GET 'http://localhost:3000/frequent'
 ```
