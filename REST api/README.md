@@ -9,9 +9,9 @@ npm run serve
 ```
 
 ## Api
-There are two routes:
 
-### Add 
+### Add receipt
+
 ```cURL
 curl -X POST \
   'http://localhost:3000' \
