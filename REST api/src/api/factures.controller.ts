@@ -27,6 +27,6 @@ export class FactureController {
     public getProduitsFrequents(req: Request, res: Response) {
         // TODO: Poker le serveur
 
-        res.send({ message: 'Not implemented' });
+        res.sendStatus(501);
     }
 }
