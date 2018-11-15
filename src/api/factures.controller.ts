@@ -1,14 +1,19 @@
 import { Request, Response } from 'express';
-import { Client, ClientOptions } from 'cassandra-driver';
+import { Client } from 'cassandra-driver';
 import { Facture } from '../models/facture.model';
 
 export class FactureController {
-    public addFacture(req: Request, res: Response) {
+    public async addFacture(req: Request, res: Response) {
+        const cassandraUri = process.env.CASSANDRA_URI;
         const facture = req.body as Facture;
 
-        // TODO: Enregistrer dans la BD
+        const client = new Client({ contactPoints: [cassandraUri] });
+        await client.connect();
 
-        res.send({ message: 'Not implemented' });
+        // TODO: Enregistrer dans la BD
+        const query = `INSERT INTO factures.factures JSON '${JSON.stringify(facture)}'`;
+        await client.execute(query);
+        res.sendStatus(200);
     }
 
     public getProduitsFrequents(req: Request, res: Response) {
@@ -17,3 +22,10 @@ export class FactureController {
         res.send({ message: 'Not implemented' });
     }
 }
+/*
+CREATE TABLE factures.factures (
+	id uuid,
+	products MAP<text, varint>,
+	PRIMARY KEY (id)
+);
+*/

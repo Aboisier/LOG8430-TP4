@@ -1,5 +1,3 @@
-import { Produit } from "./produit.model";
-
 export class Facture {
-    constructor(public produits: Produit[]) { }
+    constructor(public id: string, public products: { [name: string]: number }) { }
 }
