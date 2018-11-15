@@ -13,7 +13,13 @@ export class FactureController {
 
         // Insertin DB
         const query = `INSERT INTO factures.factures JSON '${JSON.stringify(facture)}'`;
-        await client.execute(query);
+
+        try {
+            await client.execute(query);
+        }
+        catch (err) {
+            return res.status(500).send({ message: 'Unable to add.' });
+        }
 
         res.sendStatus(200);
     }

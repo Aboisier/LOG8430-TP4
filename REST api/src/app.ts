@@ -21,5 +21,6 @@ app.use(bodyParser.json());
 
 // Primary app routes.
 app.post('/', facturesController.addFacture);
+app.get('/', facturesController.getProduitsFrequents);
 
 export default app;
