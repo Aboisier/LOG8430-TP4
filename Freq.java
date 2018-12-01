@@ -17,8 +17,8 @@
 
 //package org.apache.spark.examples.mllib;
 
-// $example on$
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.spark.api.java.JavaRDD;
@@ -26,7 +26,8 @@ import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.mllib.fpm.AssociationRules;
 import org.apache.spark.mllib.fpm.FPGrowth;
 import org.apache.spark.mllib.fpm.FPGrowthModel;
-// $example off$
+
+import static com.datastax.spark.connector.japi.CassandraJavaUtil.*;
 
 import org.apache.spark.SparkConf;
 
@@ -36,10 +37,12 @@ public class JavaSimpleFPGrowth {
     SparkConf conf = new SparkConf().setAppName("Most Frequent Items");
     JavaSparkContext sc = new JavaSparkContext(conf);
 
-    JavaRDD<String> data = sc.textFile("data/mllib/sample_fpgrowth.txt");
+    //JavaRDD<String> data = sc.textFile("data/mllib/sample_fpgrowth.txt");
+    JavaRDD<Double> data = javaFunctions(sc).cassandraTable("receipts", "receipts", mapColumnTo(HashMap.class)).select("products");
 
-    JavaRDD<List<String>> transactions = data.map(line -> Arrays.asList(line.split(" ")));
-
+    // JavaRDD<List<String>> transactions = data.map(line -> Arrays.asList(line.split(" ")));
+    JavaRDD<List<String>> transactions = data.map(line -> line.entrySet());
+    
     FPGrowth fpg = new FPGrowth()
       .setMinSupport(0.2)
       .setNumPartitions(10);
@@ -47,13 +50,6 @@ public class JavaSimpleFPGrowth {
 
     for (FPGrowth.FreqItemset<String> itemset: model.freqItemsets().toJavaRDD().collect()) {
       System.out.println("[" + itemset.javaItems() + "], " + itemset.freq());
-    }
-
-    double minConfidence = 0.8;
-    for (AssociationRules.Rule<String> rule
-      : model.generateAssociationRules(minConfidence).toJavaRDD().collect()) {
-      System.out.println(
-        rule.javaAntecedent() + " => " + rule.javaConsequent() + ", " + rule.confidence());
     }
 
     sc.stop();
