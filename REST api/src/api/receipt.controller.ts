@@ -72,7 +72,7 @@ export class ReceiptsController {
             const output = await frequentProductsService.getFrequentProducts();
             console.log('Spark task completed successfuly');
             console.log(output);
-            res.send(output);
+            return res.send(output);
         }
         catch (err) {
             console.error(`An error occured when submitting the Spark task: \n${err}`);
