@@ -38,16 +38,35 @@ def gen_receipt(nb_products, freq_type=None):
     products_dict = { product: random.randint(1, 100) for product in products }
     return { 'id': str(uuid.uuid4()), 'products': products_dict }
 
-def populate_database(nb_receipts, max_nb_products, freq_type=None):
+def add_receipt(receipt):
     url = 'http://localhost:3000'
     headers = {'Content-Type': 'application/json'}
-    for i in range(nb_receipts):
+    body = json.dumps(receipt)
+    req = urllib2.Request(url, body, headers)
+    res = urllib2.urlopen(req)
+
+def populate_database(nb_receipts, max_nb_products, freq_type=None):
+    for _ in range(nb_receipts):
         nb_products = random.randint(2, max_nb_products)
         receipt = gen_receipt(nb_products, freq_type)
-        body = json.dumps(receipt)
-        req = urllib2.Request(url, body, headers)
-        res = urllib2.urlopen(req)
+        add_receipt(receipt)
 
-populate_database(100, 10, 'pasta')
+def clear_database():
+    url = 'http://localhost:3000/clear'
+    req = urllib2.Request(url, '')
+    res = urllib2.urlopen(req)
+
+def get_all_products():
+    url = 'http://localhost:3000'
+    req = urllib2.Request(url)
+    res = urllib2.urlopen(req)
+    print res.read()
+        
+def get_frequent_products():
+    url = 'http://localhost:3000/frequent'
+    req = urllib2.Request(url)
+    res = urllib2.urlopen(req)
+    print res.read()
+
 
 
