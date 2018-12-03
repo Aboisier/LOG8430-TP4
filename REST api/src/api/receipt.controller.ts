@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { Client } from 'cassandra-driver';
 import { Receipt } from '../models/receipt.model';
+import { FrequentProductsService } from '../services/frequent_products.service';
 
 export class ReceiptsController {
     public async add(req: Request, res: Response) {
@@ -45,8 +46,18 @@ export class ReceiptsController {
         return res.status(500).send({ message: 'Unable to get all.' });
     }
 
-    public getProduitsFrequents(req: Request, res: Response) {
-        // TODO: Poker le serveur
-        return res.sendStatus(501);
+    public async getProduitsFrequents(req: Request, res: Response) {
+        console.log('Submitting Spark task...');
+        try {
+            const frequentProductsService = new FrequentProductsService();
+            const output = await frequentProductsService.getFrequentProducts();
+            console.log('Spark task completed successfuly');
+            console.log(output);
+            res.send(output);
+        }
+        catch (err) {
+            console.error(`An error occured when submitting the Spark task: \n${err}`);
+        }
+        return res.status(501);
     }
 }
