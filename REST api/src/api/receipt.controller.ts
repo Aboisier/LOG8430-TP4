@@ -46,7 +46,26 @@ export class ReceiptsController {
         return res.status(500).send({ message: 'Unable to get all.' });
     }
 
-    public async getProduitsFrequents(req: Request, res: Response) {
+    public async deleteAll(req: Request, res: Response) {
+        // Connect to DB
+        const cassandraUri = process.env.CASSANDRA_URI;
+        const client = new Client({ contactPoints: [cassandraUri] });
+        await client.connect();
+
+        const query = `TRUNCATE receipts.receipts`;
+
+        try {
+            await client.execute(query);
+            return res.sendStatus(200);
+        }
+        catch (err) {
+            console.error(err);
+        }
+
+        return res.status(500).send({ message: 'Unable to delete all.' });
+    }
+
+    public async getFrequentProducts(req: Request, res: Response) {
         console.log('Submitting Spark task...');
         try {
             const frequentProductsService = new FrequentProductsService();
@@ -58,6 +77,6 @@ export class ReceiptsController {
         catch (err) {
             console.error(`An error occured when submitting the Spark task: \n${err}`);
         }
-        return res.status(501);
+        return res.status(500).send({ message: 'Unable to get frequent products.' });;
     }
 }

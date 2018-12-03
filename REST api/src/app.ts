@@ -22,6 +22,7 @@ app.use(bodyParser.json());
 // Primary app routes.
 app.post('/', facturesController.add);
 app.get('/', facturesController.getAll);
-app.get('/frequent', facturesController.getProduitsFrequents);
+app.get('/frequent', facturesController.getFrequentProducts);
+app.post('/clear', facturesController.deleteAll);
 
 export default app;
