@@ -34,6 +34,7 @@ if __name__ == "__main__":
                 .map(lambda r: list(r["products"].keys()))
 
     model = FPGrowth.train(transactions, minSupport=0.2, numPartitions=10)
-    result = model.freqItemsets().collect()
-    for fi in result:
-        print(fi)
+    results = model.freqItemsets().collect()
+    for result in results:
+        product = '{ "product": "' + result.items[0] + '", "freq": ' + str(result.freq) + ' }' 
+        print product
