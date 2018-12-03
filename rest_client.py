@@ -39,7 +39,7 @@ def clear_database():
     req = urllib2.Request(url, '')
     res = urllib2.urlopen(req)
 
-def get_all_products():
+def get_receipts():
     url = 'http://localhost:3000'
     req = urllib2.Request(url)
     res = urllib2.urlopen(req)
@@ -75,10 +75,12 @@ def populate_database(nb_receipts, max_nb_products, freq_type=None):
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('action', choices=[ 'clear', 'frequent', 'get_all', 'populate'],
+parser.add_argument('action', choices=[ 'clear', 'frequent', 'populate', 'receipts'],
                     help='The action to perform.')
 parser.add_argument('--type', choices=PRODUCTS_DICT.keys(),
                     help='The procuct type that should be more frequent.')
+parser.add_argument('--nb_receipts', type=int, default=100,
+                    help='The number of receipts to generate when populating the database.')
 args = parser.parse_args()
 
 if args.action == 'clear':
@@ -88,11 +90,11 @@ if args.action == 'clear':
 elif args.action == 'frequent':
     print 'Getting frequent products...'
     print get_frequent_products()
-elif args.action == 'get_all':
-    print 'Getting all products...'
-    print get_all_products()
 elif args.action == 'populate':
     print 'Populating database...'
-    populate_database(100, 10, args.type)
+    populate_database(args.nb_receipts, 10, args.type)
     print 'Database populated!'
+elif args.action == 'receipts':
+    print 'Getting all receipts...'
+    print get_receipts()
 
