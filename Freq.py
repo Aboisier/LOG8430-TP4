@@ -16,21 +16,19 @@
 #
 
 from pyspark.mllib.fpm import FPGrowth
-from pyspark import SparkContext
+from pyspark import SparkContext, SparkConf
+
 import pyspark_cassandra
+from pyspark_cassandra import CassandraSparkContext
 
 if __name__ == "__main__":
-    import pyspark_cassandra
-
     conf = SparkConf() \
-    	.setAppName("FP-growth spark-cassandra") \
-    	.setMaster("spark://spark-master:7077") \
-    	.set("spark.cassandra.connection.host", "cas-1")
+    	.setAppName("Frequent Products") \
+    	.setMaster("spark://192.168.56.1:7077") \
+    	.set("spark.cassandra.connection.host", "127.0.0.1")
 
     sc = CassandraSparkContext(conf=conf)
     
-    #data = sc.textFile("sample_fpgrowth.txt")
-    #transactions = data.map(lambda line: line.strip().split(' '))
     transactions = sc.cassandraTable("receipts", "receipts") \
                 .select("products") \
                 .map(lambda r: list(r["products"].keys()))
